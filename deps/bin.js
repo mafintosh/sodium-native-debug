@@ -13,8 +13,8 @@ const VERSION = '1.0.18'
 const VS = 'v141'
 const MACOSX_DEPLOYMENT_TARGET = '10.10'
 
-const UNIX = `https://download.libsodium.org/libsodium/releases/libsodium-${VERSION}.tar.gz`
-const WIN = `https://download.libsodium.org/libsodium/releases/libsodium-${VERSION}-msvc.zip`
+const UNIX = `https://download.libsodium.org/libsodium/releases/libsodium-${VERSION}-stable.tar.gz`
+const WIN = `https://download.libsodium.org/libsodium/releases/libsodium-${VERSION}-stable-msvc.zip`
 
 const UNIX_OUT = path.join(__dirname, 'unix')
 const WIN_OUT = path.join(__dirname, 'win')
@@ -112,7 +112,7 @@ async function nodeGyp () {
 async function buildUnix () {
   if (!(await flag('build', UNIX_OUT))) return
 
-  await run(['./configure', '--prefix=' + TMP_OUT, '--enable-static', '--with-pic', '--disable-pie'], { cwd: SRC })
+  await run(['./configure', '--prefix=' + TMP_OUT, '--disable-pie'], { cwd: SRC })
   await run(['make', 'clean'], { cwd: SRC })
   await run(['make', 'install'], { cwd: SRC })
 
@@ -129,7 +129,7 @@ async function fetchUnix () {
 
   // Atomically store it here
   await rmf(SRC)
-  await fs.rename(path.join(TMP_SRC, 'libsodium-' + VERSION), SRC)
+  await fs.rename(path.join(TMP_SRC, 'libsodium-stable'), SRC)
 }
 
 async function fetchWin () {
@@ -151,7 +151,7 @@ async function fetchWin () {
     await run(['unzip', '-d', 'out', 'win.zip'], { cwd: TMP })
   }
 
-  await fs.rename(path.join(TMP_OUT, 'libsodium'), WIN_OUT)
+  await fs.rename(path.join(TMP_OUT, 'libsodium-stable'), WIN_OUT)
 }
 
 async function flag (name, folder) {
